@@ -81,7 +81,7 @@ The `REVERSED_CLIENT_ID` is also known as the "iOS URL Scheme" on the Developer'
 Login on iOS takes the user to a [SafariViewController](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref/) through the Google SDK, instead of the separate Safari browser.
 
 ### Android
-To configure Android, [generate a configuration file here](https://developers.google.com/mobile/add?platform=android&cntapi=signin). Once Google Sign-In is enabled Google will automatically create necessary credentials in Developer Console. There is no need to add the generated google-services.json file into your cordova project.
+To configure Android, [generate a configuration file here](https://developers.google.com/mobile/add?platform=android&cntapi=signin). Enable Google Sign-In and add an Android App to add the SHA1 fingerprint. Once Google Sign-In is enabled Google will automatically create necessary credentials in Developer Console for web and Android. There is no need to add the generated google-services.json file into your cordova project. You may need to configure the consent screen.
 
 Make sure you execute the `keytool` steps as explained [here](https://developers.google.com/drive/android/auth) or authentication will fail (do this for both release and debug keystores).
 
@@ -326,6 +326,9 @@ As stated before, this plugin is all about user authentication and identity, so 
 - Q: Why isn't this working on my Android Emulator???
 - A: Make sure you are using a Virtual Device running with a **Google APIs target and/or a Google APIs CPU**!
 
+- Q: I'm getting **Error 10**, what do I do?
+- A: This is likely caused by cordova not using the keystore you want to use (e.g. because you generated your own). Please check https://cordova.apache.org/docs/en/latest/guide/platforms/android/#signing-an-app to read how to do this. Some have reported that you need to run `cordova clean` before running the build to resolve error 10.
+
 - Q: I'm getting **Error 16**, what do I do?
 - A: This is always a problem because the signature (or fingerprint) of your android app when signed is not added to the google console (or firebase) OAuth whitelist. Please double check if you did everything required for this. See the mini-guide below.
 
@@ -413,24 +416,3 @@ Again we have 2 options to whitelist them. Projects that use only the _Google Cl
 2. Select your Android app at the bottom. (if you don't have any, add an android app, you can ignore the whole tutorial they give you, it's irrelevant for Cordova apps)
 3. Add the finger prints to the "SHA certificate fingerprints" section.
 4. Double check your Google Cloud console: [API & Services > credentials](https://console.cloud.google.com/apis/credentials) and see that Firebase has added these automatically at the bottom under "OAuth 2.0 client IDs"
-
-
-
-## 11. Changelog
-- 5.3.2: Allow override of Play services version via `PLAY_SERVICES_VERSION`.
-- 5.3.1: Capacitor compatibility.
-- 5.3.0: Browser platform added.
-- 5.0.3: Added the convenience method `getSigningCertificateFingerprint` to retrieve the Android cert fingerprint which is required in the Google Developer Console.
-- 5.0.2: Require linking against `SafariServices` and `CoreText` frameworks on iOS as per Google's recommendation. Added `loginHint` on iOS.
-- 5.0.0: Android GoogleSignIn SDK (See #193), iOS SDK 4.0.0, iOS compatibility with Facebook authentication plugins, added `familyName` and `givenName`.
-- 4.0.8: Fix for Android 6 where it would crash while asking for permission. Thx #166!
-- 4.0.7: Re-added a missing framework for iOS. Thx #168!
-- 4.0.6: Updated iOS GoogleSignIn SDK to 2.4.0. Thx #153!
-- 4.0.5: Fixed a broken import on iOS.
-- 4.0.4: Using framework tags again for Android
-- 4.0.3: On iOS `isAvailable` always returns try since that should be fine with the new Google Sign-In framework. Re-added imageUrl to the result of Sign-In on iOS.
-- 4.0.1: Login on Android would crash the app if `isAvailable` was invoked beforehand.
-- 4.0.0: Removed the need for `iosApiKey`, reverted Android to Google playservices framework for wider compatibility, documented scopes feature a bit.
-- 3.0.0: Using Google Sign-In for iOS, instead of Google+.
-- 1.1.0: Added `isAvailable`, for issue [#37](https://github.com/EddyVerbruggen/cordova-plugin-googleplus/issues/37)
-- 1.0.0: Initial version supporting iOS and Android.
